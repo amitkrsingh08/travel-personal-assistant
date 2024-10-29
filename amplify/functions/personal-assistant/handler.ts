@@ -21,6 +21,10 @@ const client = new BedrockRuntimeClient({ region: AWS_REGION });
 export const handler: Handler = async (event) => {
   const { conversation } = event.arguments;
 
+  console.log("Event:", event);
+  console.log("Conversation:", conversation);
+
+  /*
   const SYSTEM_PROMPT = `
   To create a personalized travel planning experience, greet users warmly and inquire about their travel preferences 
   such as destination, dates, budget, and interests. Based on their input, suggest tailored itineraries that include 
@@ -31,7 +35,15 @@ export const handler: Handler = async (event) => {
   real-time updates on weather and events, and allow users to save and modify their itineraries. Additionally, 
   provide a budget tracking feature and the option to book flights and accommodations directly or through trusted 
   platforms, all while maintaining a warm and approachable tone to enhance the excitement of trip planning.
-`;
+`;*/
+
+  const SYSTEM_PROMPT = `
+  To create a personalized software systems test generator assistant, carefully consider the scenarios described by the user and 
+  various technologies used in the application such as database, application server, programming language. Based on 
+  their input, generate detailed test scenario that include common scenarios for e commerce and supply chain domain.
+  Provide recommendations for tests which are critical and test which are commonly used. Highlight the importance of 
+  the test cases generated and allow users to save and modify their test cases.
+  `;
 
   const input = {
     modelId: MODEL_ID,

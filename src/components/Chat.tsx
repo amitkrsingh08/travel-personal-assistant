@@ -1,10 +1,11 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import { Button, Placeholder, View } from "@aws-amplify/ui-react";
+import { Button, Placeholder, View, SelectField } from "@aws-amplify/ui-react";
 import { amplifyClient } from "@/app/amplify-utils";
 
 // Types
 type Message = {
   role: string;
+  request_type: string;
   content: { text: string }[];
 };
 
@@ -12,6 +13,7 @@ type Conversation = Message[];
 
 export function Chat() {
   const [conversation, setConversation] = useState<Conversation>([]);
+  const [requestTypeValue, setRequestTypeValue] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -24,13 +26,17 @@ export function Chat() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (inputValue.trim()) {
+    console.log("Selected input value:", inputValue);
+    console.log("Selected request type value:", requestTypeValue);
+    if (inputValue.trim() && requestTypeValue.trim()) {
       const message = setNewUserMessage();
       fetchChatResponse(message);
     }
   };
 
   const fetchChatResponse = async (message: Message) => {
+    console.log("Message->fetchChatResponse:", message);
+    setRequestTypeValue("");
     setInputValue("");
     setIsLoading(true);
 
@@ -66,6 +72,7 @@ export function Chat() {
   const setNewUserMessage = (): Message => {
     const newUserMessage: Message = {
       role: "user",
+      request_type: requestTypeValue,
       content: [{ text: inputValue }],
     };
     setConversation((prevConversation) => [
@@ -73,6 +80,7 @@ export function Chat() {
       newUserMessage,
     ]);
 
+    //setRequestTypeValue("");
     setInputValue("");
     return newUserMessage;
   };
@@ -81,7 +89,7 @@ export function Chat() {
     <View className="chat-container">
       <View className="messages" ref={messagesRef}>
         {conversation.map((msg, index) => (
-          <View key={index} className={`message ${msg.role}`}>
+          <View key={index} className={'message ${msg.role}'}>
             {msg.content[0].text}
           </View>
         ))}
@@ -95,6 +103,14 @@ export function Chat() {
       )}
 
       <form onSubmit={handleSubmit} className="input-container">
+        <SelectField 
+          label="Select Test Type"
+          value={requestTypeValue}
+          onChange={(e)=>setRequestTypeValue(e.target.value)}>
+          <option value="UseCase1">UseCase1</option>
+          <option value="UseCase1">UseCase2</option>
+          <option value="UseCase1">UseCase3</option>        
+        </SelectField>
         <input
           name="prompt"
           value={inputValue}
